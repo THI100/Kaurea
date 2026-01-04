@@ -28,3 +28,23 @@ F6: MINIMIX(a, b):
     a += b
     b ^= ROTL(a, 7)
     return (a, b)
+
+---
+
+ROTL for 32 bits: static inline uint32_t ROTL32(uint32_t x, uint32_t n) {
+    return (x << n) | (x >> (32 - n));
+}
+
+ROTR for 32 bits: static inline uint32_t ROTR32(uint32_t x, uint32_t n) {
+    return (x >> n) | (x << (32 - n));
+}
+
+ROTL: static inline uint32_t ROTL8x4(uint32_t x, uint32_t n) {
+    n &= 3;
+    return (x << (n * 8)) | (x >> (32 - n * 8));
+}
+
+ROTR: static inline uint32_t ROTR8x4(uint32_t x, uint32_t n) {
+    n &= 3;
+    return (x >> (n * 8)) | (x << (32 - n * 8));
+}
