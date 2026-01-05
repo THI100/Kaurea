@@ -3,19 +3,23 @@
 
 #include "../include/kaurea.h"
 
-char* hash (const char* input, uint64_t salting) {
+char* hash (const char* input, const uint16_t salting) {
 
-        if (!input) {
-        return NULL;
-    }
+    // Initialization
 
     const size_t LIMIT = 128;
     uint8_t hashBox[LIMIT];
     memset(hashBox, 0, LIMIT);
 
-    size_t inputSize = strlen(input);
+    // Input handling
 
-    char* hash = "b1946ac92492d2347c6235b4d2611184";
+    if (!input) {
+        return NULL;
+    }
+
+    // Apply Salting
+    
+
 
     return hash;
 }
