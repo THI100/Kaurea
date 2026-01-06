@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "../include/kaurea.h"
+#include "../include/salting.h"
 
 char* hash (const char* input, const uint16_t salting) {
 
