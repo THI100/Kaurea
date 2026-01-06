@@ -1,6 +1,6 @@
 #ifndef SALTING_H
 #define SALTING_H
 
-void salt (const char* input, uint16_t salting, uint8_t* output);
+void salt (uint8_t* input_bytes, uint16_t salting);
 
 #endif //SALTING_H
