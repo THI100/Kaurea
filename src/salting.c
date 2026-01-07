@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../include/salting.h"
+#include "../include/formulas.h"
+
 uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds, size_t* out_len) {
    if (input == NULL || input_len == 0) return NULL;
 
@@ -18,7 +21,7 @@ uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds, size_t* o
    // Generate Salt via ARX
    while (current_len < salting_rounds) {
       for (size_t i = 0; i < ilp - 1 && current_len < salting_rounds; i++) {
-         salt_box[current_len++] = ARXL(temp_box[i], temp_box[i + 1]);
+         salt_box[current_len++] = arxlB(temp_box[i], temp_box[i + 1]);
       }
    }
 
