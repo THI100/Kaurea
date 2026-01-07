@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "../include/kaurea.h"
 #include "../include/salting.h"
@@ -19,10 +20,13 @@ char* hash (const char* input, const size_t salting_rounds, const size_t input_l
 
     // Apply Salting
     size_t salted_len = 0;
-	uint8_t salted = salt(&input_bytes, input_len, salting_rounds, &salted_len);
+
+    // Missing allocation of the memory
+	uint8_t* salted = salt(&input_bytes, input_len, salting_rounds, &salted_len);
 
     // Compress or Fill
-    cof(&salted, salted_len, &hash_box, LIMIT);
+    
+    // cof(&salted, salted_len, &hash_box, LIMIT);
 
     free(salted);
     
