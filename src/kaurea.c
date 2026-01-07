@@ -5,26 +5,27 @@
 #include "../include/kaurea.h"
 #include "../include/salting.h"
 
-char* hash (const char* input, const size_t salting_rounds) {
+char* hash (const char* input, const size_t salting_rounds, const size_t input_len) {
+    #define LIMIT 128
 
     // Initialization
-
-    const size_t LIMIT = 128;
-    uint8_t hashBox[LIMIT];
-    memset(hashBox, 0, LIMIT);
-
+    uint8_t hash_box[LIMIT] = {0};
 	uint8_t* input_bytes = (uint8_t*)input;
-    size_t input_lenght = sizeof(input) / input[0];
 
     // Input handling
-
     if (!input) {
         return NULL;
     }
 
     // Apply Salting
+    size_t salted_len = 0;
+	uint8_t salted = salt(&input_bytes, input_len, salting_rounds, &salted_len);
+
+    // Compress or Fill
+    cof(&salted, salted_len, &hash_box, LIMIT);
+
+    free(salted);
     
-	salt(&input_bytes, input_lenght, salting_rounds);
 
     return hash;
 }

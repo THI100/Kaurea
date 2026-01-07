@@ -2,16 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds) {
+uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds, size_t* out_len) {
    if (input == NULL || input_len == 0) return NULL;
 
    size_t ilp = input_len + 1;
    uint8_t* temp_box = malloc(ilp);
    memcpy(temp_box, input, input_len);
     
-   // Padding/Adjustment
    temp_box[input_len] = (ilp <= 2) ? (((temp_box[0] + (uint8_t)salting_rounds) % 255) + 1) : 0x00;
 
+   //Initialize salt_box
    uint8_t* salt_box = malloc(salting_rounds);
    size_t current_len = 0;
 
@@ -22,7 +22,7 @@ uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds) {
       }
    }
 
-   // Allocate maximum possible size
+   // Initialize salted_input
    uint8_t* salted_input = malloc(salting_rounds + ilp);
    size_t actual_salted_len = 0;
 
@@ -50,6 +50,8 @@ uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds) {
          salted_input[j] = t;
       }
    }
+
+   *out_len = actual_salted_len;
 
    free(temp_box);
    free(salt_box);
