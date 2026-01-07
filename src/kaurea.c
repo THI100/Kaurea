@@ -1,10 +1,11 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../include/kaurea.h"
 #include "../include/salting.h"
 
-char* hash (const char* input, const uint16_t salting_rounds) {
+char* hash (const char* input, const size_t salting_rounds) {
 
     // Initialization
 
