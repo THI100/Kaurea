@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../include/salting.h"
+#include "../include/solutions.h"
 #include "../include/formulas.h"
 
 uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds, size_t* out_len) {
@@ -59,6 +59,9 @@ uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds, size_t* o
    free(temp_box);
    free(salt_box);
 
-   // Note: The caller needs to know the new length.
    return salted_input; 
+}
+
+void cof (uint8_t* input, const size_t input_len, uint8_t* hash_box, const size_t hash_len) {
+   
 }

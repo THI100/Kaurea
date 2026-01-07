@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #include "../include/kaurea.h"
-#include "../include/salting.h"
+#include "../include/solutions.h"
 
 char* hash (const char* input, const size_t salting_rounds, const size_t input_len) {
     #define LIMIT 128
@@ -26,7 +26,7 @@ char* hash (const char* input, const size_t salting_rounds, const size_t input_l
 
     // Compress or Fill
     
-    // cof(&salted, salted_len, &hash_box, LIMIT);
+    cof(&salted, salted_len, &hash_box, LIMIT);
 
     free(salted);
     
