@@ -63,5 +63,19 @@ uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds, size_t* o
 }
 
 void cof (uint8_t* input, const size_t input_len, uint8_t* hash_box, const size_t hash_len) {
+   // Compression
+   if (input_len > hash_len) {
+
+   }
+
+   // Middle-ground /By-pass
+   else if (input_len == hash_len)
+   {
+      memcpy(hash_box, input, hash_len);
+   }
    
+   // Expansion
+   else {
+
+   }
 }
