@@ -40,5 +40,26 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
         cof(&input_bytes, input_len, &hash_box, LIMIT);
     }
 
+    // Divide normalized input into 32 of 32 bits (4 bytes)
+
+
+    // Turning uint8_t array into character array.
+
+    char *hash = malloc(LIMIT * 2 + 1);
+    if (!hash) {
+        return NULL;
+    }
+
+    static const char hex_digits[] = "0123456789abcdef";
+
+    for (size_t i = 0; i < LIMIT; i++) {
+        hash[i * 2]     = hex_digits[hash_box[i] >> 4];
+        hash[i * 2 + 1] = hex_digits[hash_box[i] & 0x0F];
+    }
+
+    hash[LIMIT * 2] = '\0';
+
+    // END, call free(hash) after secure depositation
+
     return hash;
 }
