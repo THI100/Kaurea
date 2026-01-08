@@ -62,20 +62,59 @@ uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds, size_t* o
    return salted_input; 
 }
 
-void cof (uint8_t* input, const size_t input_len, uint8_t* hash_box, const size_t hash_len) {
-   // Compression
-   if (input_len > hash_len) {
+void cof(uint8_t* input, const size_t input_len, uint8_t* hash_box, const size_t hash_len) {
+   size_t seed = input_len * 32123u + hash_len;
 
+   /* =======================
+      Compression (Option 1)
+   ======================= */
+
+   if (input_len > hash_len) {
+      size_t in_i = 0;
+
+      for (size_t out_i = 0; out_i < hash_len; out_i++) {
+         /* pseudo-random but deterministic indices */
+         size_t j = (seed + in_i) % input_len;
+         size_t k = (seed ^ input[in_i]) % input_len;
+
+         uint8_t x = input[j];
+         uint8_t y = input[k];
+
+         /* pairwise fold */
+         uint8_t r = (uint8_t)(x + ROTLB(y, 3));
+         r ^= (uint8_t)seed;
+         r = (uint8_t)(r * 0x9E);
+         r ^= (r >> 3);
+
+         hash_box[out_i] = r;
+
+         seed = (seed * 33u) ^ r;
+         in_i = (in_i + 1) % input_len;
+      }
    }
 
-   // Middle-ground /By-pass
-   else if (input_len == hash_len)
-   {
+   /* =======================
+      Middle-ground
+   ======================= */
+   else if (input_len == hash_len) {
       memcpy(hash_box, input, hash_len);
    }
-   
-   // Expansion
-   else {
 
+   /* =======================
+      Expansion (Option 3)
+   ======================= */
+   else {
+      uint8_t state = (uint8_t)(seed & 0xFF);
+
+      for (size_t i = 0; i < hash_len; i++) {
+         uint8_t n = input[i % input_len];
+
+         state ^= (uint8_t)(n + i);
+         state = ROTLB(state, 3);
+         state = (uint8_t)(state * 0x5B);
+         state ^= (state >> 2);
+
+         hash_box[i] = state;
+      }
    }
 }
