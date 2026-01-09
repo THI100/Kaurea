@@ -118,3 +118,7 @@ void cof(uint8_t* input, const size_t input_len, uint8_t* hash_box, const size_t
       }
    }
 }
+
+void disassemble_blocks (uint8_t* input, const size_t input_len, uint32_t* blocks, const size_t blocks_len) {
+
+}

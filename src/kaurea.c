@@ -6,8 +6,10 @@
 #include "../include/kaurea.h"
 #include "../include/solutions.h"
 
+// @param hash_len Always 128
 char* hash (const char* input, const size_t input_len, const size_t salting_rounds) {
     #define LIMIT 128
+    #define BLEN 32
 
     // Initialization
     uint8_t hash_box[LIMIT] = {0};
@@ -42,6 +44,9 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
 
     // Divide normalized input into 32 of 32 bits (4 bytes)
 
+    uint32_t blocks[BLEN] = {0};
+    disassemble_blocks(&hash_box, LIMIT, blocks, BLEN);
+
 
     // Turning uint8_t array into character array.
 
@@ -60,6 +65,5 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
     hash[LIMIT * 2] = '\0';
 
     // END, call free(hash) after secure depositation
-
     return hash;
 }
