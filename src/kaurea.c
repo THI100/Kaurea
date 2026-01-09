@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stddef.h>
 
 #include "../include/kaurea.h"
 #include "../include/solutions.h"
@@ -46,7 +47,6 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
 
     uint32_t blocks[BLEN] = {0};
     disassemble_blocks(&hash_box, LIMIT, blocks, BLEN);
-
 
     // Turning uint8_t array into character array.
 

@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 
 #include "../include/solutions.h"
 #include "../include/formulas.h"
@@ -119,6 +120,10 @@ void cof(uint8_t* input, const size_t input_len, uint8_t* hash_box, const size_t
    }
 }
 
-void disassemble_blocks (uint8_t* input, const size_t input_len, uint32_t* blocks, const size_t blocks_len) {
+void disassemble_blocks(uint8_t* input, const size_t input_len, uint32_t* blocks, const size_t blocks_len) {
+    size_t max_blocks = input_len / 4;
+    // Ensure we don't exceed the provided blocks_len buffer
+    size_t iterations = (max_blocks < blocks_len) ? max_blocks : blocks_len;
 
+    memcpy(blocks, input, iterations * sizeof(uint32_t));
 }
