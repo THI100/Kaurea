@@ -6,6 +6,7 @@
 
 #include "../include/kaurea.h"
 #include "../include/solutions.h"
+#include "../include/flow.h"
 
 // @param hash_len Always 128
 char* hash (const char* input, const size_t input_len, const size_t salting_rounds) {
@@ -46,7 +47,11 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
     // Divide normalized input into 32 of 32 bits (4 bytes)
 
     uint32_t blocks[BLEN] = {0};
-    disassemble_blocks(&hash_box, LIMIT, blocks, BLEN);
+    disassemble_blocks(&hash_box, LIMIT, &blocks, BLEN);
+
+    // Hashing
+
+    apply(&blocks, BLEN);
 
     // Turning uint8_t array into character array.
 
