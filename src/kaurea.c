@@ -51,7 +51,7 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
 
     // Hashing
 
-    apply(&blocks, BLEN);
+    apply(&blocks, BLEN, 16);
 
     // Turning uint8_t array into character array.
 
