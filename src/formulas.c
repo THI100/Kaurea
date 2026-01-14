@@ -57,6 +57,6 @@ static inline uint8_t ROTRB (uint8_t x, uint8_t n) {
 
 uint8_t arxlB(uint8_t x, uint8_t c) {
     x += c;
-    x ^= ROTRB(x, 11);
+    x ^= ROTRB(x, 5);
     return ROTLB(x, 3);
 }
