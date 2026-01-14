@@ -69,3 +69,7 @@ void apply(uint32_t* original, const size_t original_len, const size_t rounds) {
 
     memcpy(original, state_original, LEN * sizeof(uint32_t));
 }
+
+void shuffle(uint8_t* hash_box, uint8_t* hash_box_copy, const size_t hash_len) {
+    
+}
