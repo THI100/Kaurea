@@ -63,7 +63,7 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
     static const char hex_digits[] = "0123456789abcdef";
 
     for (size_t i = 0; i < LIMIT; i++) {
-        hash[i * 2]     = hex_digits[hash_box[i] >> 4];
+        hash[i * 2] = hex_digits[hash_box[i] >> 4];
         hash[i * 2 + 1] = hex_digits[hash_box[i] & 0x0F];
     }
 
