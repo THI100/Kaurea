@@ -10,7 +10,8 @@ void apply(uint32_t* original, const size_t original_len, const size_t rounds) {
     #define LEN 32
 
     if (original_len < LEN) {
-        printf("Equal size: negative, data will be lost on process.\n");
+        printf("ERROR: Equal size: negative.\n");
+        return;
     }
 
     size_t count = 0;
@@ -71,5 +72,23 @@ void apply(uint32_t* original, const size_t original_len, const size_t rounds) {
 }
 
 void shuffle(uint8_t* hash_box, uint8_t* hash_box_copy, const size_t hash_len) {
-    
+    if (hash_len <= 1) return;
+
+    // fixed seed
+    uint32_t internal_seed = 0x9E3779B9; 
+
+    for (size_t i = hash_len - 1; i > 0; i--) {
+        internal_seed ^= hash_box_copy[i] + (internal_seed << 6) + (internal_seed >> 2);
+
+        // Generate a pseudo-random index based on the seed
+        size_t j = internal_seed % (i + 1);
+
+        // Swap elements in hash_box
+        uint8_t temp = hash_box[i];
+        hash_box[i] = hash_box[j];
+        hash_box[j] = temp;
+        
+        // Update the copy to prevent repetitive patterns
+        internal_seed += hash_box[i];
+    }
 }
