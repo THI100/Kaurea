@@ -122,13 +122,22 @@ void cof(uint8_t* input, const size_t input_len, uint8_t* hash_box, const size_t
 }
 
 void disassemble_blocks(uint8_t* input, const size_t input_len, uint32_t* blocks, const size_t blocks_len) {
-    size_t max_blocks = input_len / 4;
-    // Ensure we don't exceed the provided blocks_len buffer
-    size_t iterations = (max_blocks < blocks_len) ? max_blocks : blocks_len;
+   size_t max_blocks = input_len / 4;
+   // Ensure we don't exceed the provided blocks_len buffer
+   size_t iterations = (max_blocks < blocks_len) ? max_blocks : blocks_len;
 
-    memcpy(blocks, input, iterations * sizeof(uint32_t));
+   memcpy(blocks, input, iterations * sizeof(uint32_t));
 }
 
 void assemble_array(uint32_t* blocks, const size_t blocks_len, uint8_t* hash_box, const size_t hash_len) {
+   // Each uint32_t occupies 4 bytes
+   size_t bytes_to_copy = blocks_len * sizeof(uint32_t);
 
+   // Safety check: Ensure we do not overflow the output buffer
+   if (bytes_to_copy > hash_len) {
+      bytes_to_copy = hash_len;
+   }
+
+   // Copy the raw memory from the uint32_t array to the uint8_t array
+   memcpy(hash_box, blocks, bytes_to_copy);
 }
