@@ -9,7 +9,7 @@
 #include "../include/flow.h"
 
 // @param hash_len Always 128
-char* hash (const char* input, const size_t input_len, const size_t salting_rounds) {
+char* hash (const char* input, const size_t input_len, const size_t salting_rounds, size_t hash_len) {
     #define LIMIT 128
     #define BLEN 32
 
@@ -25,14 +25,21 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
     // Apply Solutions
     if (salting_rounds > 0) {
         size_t salted_len = 0;
-        
-        uint8_t* temp = malloc(SIZE_MAX * sizeof(uint8_t));
-	    temp = salt(&input_bytes, input_len, salting_rounds, &salted_len);
+
+        uint8_t* temp = salt(&input_bytes, input_len, salting_rounds, &salted_len);
         uint8_t* salted = realloc(temp, salted_len * sizeof(uint8_t));
 
-        free(temp);
+        if (salted == NULL) {
+            free(temp);
+            return;
+        }
+
+        // 3. REMOVE: free(temp); <--- This was your crash. 
+        // 'salted' now owns that memory block.
 
         cof(&salted, salted_len, &hash_box, LIMIT);
+
+        // 4. Final cleanup
         free(salted);
     }
 
@@ -61,6 +68,9 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
         hash[i * 2] = hex_digits[hash_box[i] >> 4];
         hash[i * 2 + 1] = hex_digits[hash_box[i] & 0x0F];
     }
+
+    size_t len = (LIMIT*2)+1;
+    hash_len = len;
 
     hash[LIMIT * 2] = '\0';
 

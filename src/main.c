@@ -6,15 +6,23 @@
 #include "../include/kaurea.h"
 
 int main () {
-    #define MAXLEN 257
-
     char test[] = "Hello";
     size_t size = sizeof(test) / sizeof(test[0]);
+    size_t len = 0;
 
-    char* hashed = malloc(MAXLEN * sizeof(char));
-    hashed = hash(&test, size, 8);
-    printf("%s/n", hashed);
-    free(hashed);
+    printf("text: %s, size: %zu\n", test, size);
+
+    char* temp = hash(&test, size, 16, &len);
+    char* hash = realloc(temp, len * sizeof(char));
+
+    if (hash == NULL) {
+        free(temp);
+        return 1;
+    }
+
+    printf("%s\n", hash);
+
+    free(hash);
 
     return 0;
 }
