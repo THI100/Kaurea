@@ -26,7 +26,7 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
     if (salting_rounds > 0) {
         size_t salted_len = 0;
 
-        uint8_t* temp = salt(&input_bytes, input_len, salting_rounds, &salted_len);
+        uint8_t* temp = salt(input_bytes, input_len, salting_rounds, &salted_len);
         uint8_t* salted = realloc(temp, salted_len * sizeof(uint8_t));
 
         if (salted == NULL) {
@@ -37,24 +37,24 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
         // 3. REMOVE: free(temp); <--- This was your crash. 
         // 'salted' now owns that memory block.
 
-        cof(&salted, salted_len, &hash_box, LIMIT);
+        cof(salted, salted_len, hash_box, LIMIT);
 
         // 4. Final cleanup
         free(salted);
     }
 
     else {
-        cof(&input_bytes, input_len, &hash_box, LIMIT);
+        cof(input_bytes, input_len, hash_box, LIMIT);
     }
 
     // Main flow
     uint32_t blocks[BLEN] = {0};
-    disassemble_blocks(&hash_box, LIMIT, &blocks, BLEN);
-    apply(&blocks, BLEN, 16);
+    disassemble_blocks(hash_box, LIMIT, blocks, BLEN);
+    apply(blocks, BLEN, 16);
     uint8_t hash_cpy[LIMIT] = {0};
     memcpy(hash_cpy, hash_box, LIMIT);
-    assemble_array(&blocks, BLEN, &hash_box, LIMIT);
-    shuffle(&hash_box, &hash_cpy, LIMIT);
+    assemble_array(blocks, BLEN, hash_box, LIMIT);
+    shuffle(hash_box, hash_cpy, LIMIT);
 
     // Turning uint8_t array into character array.
     char *hash = malloc(LIMIT * 2 + 1);
