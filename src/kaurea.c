@@ -44,7 +44,7 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
     uint32_t blocks[BLEN] = {0};
     disassemble_blocks(&hash_box, LIMIT, &blocks, BLEN);
     apply(&blocks, BLEN, 16);
-    uint8_t hash_cpy[LIMIT] = [0];
+    uint8_t hash_cpy[LIMIT] = {0};
     memcpy(hash_cpy, hash_box, LIMIT);
     assemble_array(&blocks, BLEN, &hash_box, LIMIT);
     shuffle(&hash_box, &hash_cpy, LIMIT);

@@ -5,6 +5,8 @@
 // Macros for bitwise rotation (32-bit)
 #define ROTL(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
 #define ROTR(x, n) (((x) >> (n)) | ((x) << (32 - (n))))
+#define ROTLB(x, n) (((x) << (n)) | ((x) >> (8 - (n))))
+#define ROTRB(x, n) (((x) >> (n)) | ((x) << (8 - (n))))
 
 // F1: Updates four values in place using pointers
 void omega_fuse(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d) {
@@ -45,14 +47,6 @@ uint32_t srperm(uint32_t x) {
 void minimix(uint32_t *a, uint32_t *b) {
     *a += *b;
     *b ^= ROTL(*a, 7);
-}
-
-static inline uint8_t ROTLB (uint8_t x, uint8_t n) {
-    return (x << n) | (x >> (8 - n));
-}
-
-static inline uint8_t ROTRB (uint8_t x, uint8_t n) {
-    return (x >> n) | (x << (8 - n));
 }
 
 uint8_t arxlB(uint8_t x, uint8_t c) {

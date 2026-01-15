@@ -10,8 +10,6 @@ uint32_t srperm(uint32_t x);
 void minimix(uint32_t *a, uint32_t *b);
 
 // 8-bit functions
-static inline uint8_t ROTLB (uint8_t x, uint8_t n);
-static inline uint8_t ROTRB (uint8_t x, uint8_t n);
 uint8_t arxlB(uint8_t x, uint8_t c);
 
 #endif //FORMULAS_H
