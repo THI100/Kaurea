@@ -17,7 +17,6 @@ int main () {
     char* hash_final = malloc(H_LEN * sizeof(char));
     hash_final = hash(test, size, 16, len);
 
-
     printf("%s\n", hash_final);
 
     free(hash_final);
