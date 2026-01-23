@@ -65,6 +65,9 @@ uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds, size_t* o
 }
 
 void cof(uint8_t* input, const size_t input_len, uint8_t* hash_box, const size_t hash_len) {
+   #define ROTLB(x, n) (((x) << (n)) | ((x) >> (8 - (n))))
+   #define ROTRB(x, n) (((x) >> (n)) | ((x) << (8 - (n))))
+   
    size_t seed = input_len * 32123u + hash_len;
 
    /* =======================
