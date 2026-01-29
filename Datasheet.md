@@ -1,7 +1,7 @@
 | **Field**                       | **Description / Value**                 |
 |---------------------------------|-----------------------------------------|
 | **Hashing Method Name**         | Kaurea                                  |
-| **Version**                     | 0.1.1                                   |
+| **Version**                     | 0.1.2                                   |
 | **Author / Organization**       | THI100                                  |
 | **Date Added**                  | 02/01/26                                |
 | **Category**                    | Cryptographic                           |
@@ -11,8 +11,8 @@
 | **Collision Resistance**        |                                         |
 | **Pre-image Resistance**        |                                         |
 | **Second Pre-image Resistance** |                                         |
-| **Speed (ops/sec)**             |                                         |
-| **Memory Usage**                |                                         |
+| **Speed (ops/ms)**              | 0.159 ms                                |
+| **Memory Usage**                | 9360 Kb                                 |
 | **Deterministic?**              | Yes                                     |
 | **Salt Support**                | Yes                                     |
 | **Keyed? (MAC/PRF)**            | No                                      |

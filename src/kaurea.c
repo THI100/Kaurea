@@ -31,7 +31,7 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
 
         if (salted == NULL) {
             free(temp);
-            return;
+            return NULL;
         }
 
         // 3. REMOVE: free(temp); <--- This was your crash. 
