@@ -7,6 +7,12 @@
 
 #include "../include/kaurea.h"
 
+#define NUM_TESTS_PI 10000000
+#define NUM_TESTS_COL 2000000
+#define MAX_INPUT_LEN 128
+#define H_LEN 128          // The length we want the hash to be
+#define SALTING_ROUNDS 16  // Example value for salting_rounds
+
 void unique_utf8_string(char *buf, size_t max_len, unsigned long long counter) {
     static unsigned long long seed = 0;
     if (seed == 0) {
@@ -42,7 +48,7 @@ void print_memory_usage() {
 // --- Simple hash table for collision detection ---
 typedef struct {
     uint64_t hash_code;
-    char hash_str[HASH_LEN + 1];
+    char hash_str[H_LEN + 1];
     char input[MAX_INPUT_LEN];
     int used;
 } HashEntry;
@@ -55,15 +61,6 @@ static inline uint64_t fast64(const char *s) {
         h = (h ^ (unsigned char)*s) * 1099511628211ULL;
     return h;
 }
-
-// --- Config ---
-#define NUM_TESTS_PI 10000000
-#define NUM_TESTS_COL 2000000
-#define MAX_INPUT_LEN 128
-#define H_LEN 128          // The length we want the hash to be
-#define SALTING_ROUNDS 16  // Example value for salting_rounds
-
-// ... (unique_utf8_string and print_memory_usage remain the same) ...
 
 int main() {
     clock_t start, end;
