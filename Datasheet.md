@@ -8,10 +8,10 @@
 | **Use Case**                    | File Integrity                          |
 | **Hash Size (bits)**            | 1024x                                   |
 | **Output Format**               | Hex                                     |
-| **Collision Resistance**        |                                         |
-| **Pre-image Resistance**        |                                         |
-| **Second Pre-image Resistance** |                                         |
-| **Speed (ops/ms)**              | 0.159 ms                                |
+| **Collision Resistance**        | Positive                                |
+| **Pre-image Resistance**        | Positive                                |
+| **Second Pre-image Resistance** | Positive                                |
+| **Speed (ops/ms)**              | 0.120 ms                                |
 | **Memory Usage**                | 9360 Kb                                 |
 | **Deterministic?**              | Yes                                     |
 | **Salt Support**                | Yes                                     |
