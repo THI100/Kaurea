@@ -17,7 +17,7 @@ void print_memory_usage() {
     printf("Memory used: %ld kilobytes\n", usage.ru_maxrss);
 }
 
-int main(void) {
+int main() {
     clock_t start, end;
     double cpu_time_used;
 
