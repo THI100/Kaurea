@@ -4,15 +4,8 @@
 #include <stdint.h>
 #include <time.h>
 #include <sys/resource.h>
-#include <stddef.h>
 
 #include "../include/kaurea.h"
-
-// --- Config ---
-#define NUM_TESTS_PI 10000000
-#define NUM_TESTS_COL 2000000
-#define MAX_INPUT_LEN 128
-#define HASH_LEN 128   // <-- adjust to your actual hash length
 
 void unique_utf8_string(char *buf, size_t max_len, unsigned long long counter) {
     static unsigned long long seed = 0;
@@ -63,17 +56,27 @@ static inline uint64_t fast64(const char *s) {
     return h;
 }
 
+// --- Config ---
+#define NUM_TESTS_PI 10000000
+#define NUM_TESTS_COL 2000000
+#define MAX_INPUT_LEN 128
+#define H_LEN 128          // The length we want the hash to be
+#define SALTING_ROUNDS 16  // Example value for salting_rounds
+
+// ... (unique_utf8_string and print_memory_usage remain the same) ...
+
 int main() {
     clock_t start, end;
     double cpu_time_used;
     int nc = 0;
+    char test_input[256];
 
-    printf("Select option: 1 = collision, 2 = pre-image.\n");
-    scanf("%d", &nc);
+    printf("Select option: 1 = collision, 2 = pre-image, 3 = single hash.\n");
+    if (scanf("%d", &nc) != 1) return 1;
 
+    // --- Option 1: Collision Testing ---
     if (nc == 1) {
         start = clock();
-
         size_t collisions = 0;
         HashEntry *table = calloc(TABLE_SIZE, sizeof(HashEntry));
         if (!table) {
@@ -84,15 +87,17 @@ int main() {
         for (size_t i = 0; i < NUM_TESTS_COL; i++) {
             char input[MAX_INPUT_LEN];
             unique_utf8_string(input, MAX_INPUT_LEN, i + 1);
-            char *h = hash(input, 42);
+            size_t input_len = strlen(input);
+
+            // Updated function call
+            char *h = hash(input, input_len, SALTING_ROUNDS, H_LEN);
             if (!h) continue;
 
             uint64_t hc = fast64(h);
             size_t pos = hc % TABLE_SIZE;
 
-            // Linear probing
             while (table[pos].used) {
-                if (memcmp(table[pos].hash_str, h, HASH_LEN) == 0) {
+                if (memcmp(table[pos].hash_str, h, H_LEN) == 0) {
                     collisions++;
                     printf("\n[COLLISION #%zu]\nInput A: %s\nInput B: %s\nHash   : %s\n",
                            collisions, table[pos].input, input, h);
@@ -101,91 +106,82 @@ int main() {
                 pos = (pos + 1) % TABLE_SIZE;
             }
 
-            // Insert if empty
             if (!table[pos].used) {
                 table[pos].used = 1;
                 table[pos].hash_code = hc;
-                strncpy(table[pos].hash_str, h, HASH_LEN);
+                strncpy(table[pos].hash_str, h, H_LEN);
                 strncpy(table[pos].input, input, MAX_INPUT_LEN);
             }
+            free(h); // Free the string returned by your hash function
         }
 
         printf("\nTotal tests: %d\nCollisions found: %zu\n", NUM_TESTS_COL, collisions);
         print_memory_usage();
-
         free(table);
-        end = clock();
-        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-        printf("Execution time: %.6f seconds\n", cpu_time_used);
     }
 
+    // --- Option 2: Pre-image Attack ---
     else if (nc == 2) {
         start = clock();
         const char *targetInput = "SecretMessage123";
-        char *targetHash = hash(targetInput, 42);
-        if (!targetHash) {
-            fprintf(stderr, "Target hash failed.\n");
-            return 1;
-        }
+        size_t target_len = strlen(targetInput);
+        
+        // Updated function call
+        char *targetHash = hash(targetInput, target_len, SALTING_ROUNDS, H_LEN);
+        if (!targetHash) return 1;
 
         printf("Target Input: %s\nTarget Hash : %s\n", targetInput, targetHash);
 
-        size_t found = 0;
+        int found = 0;
         for (size_t i = 1; i <= NUM_TESTS_PI; i++) {
             char candidate[MAX_INPUT_LEN];
             unique_utf8_string(candidate, MAX_INPUT_LEN, i);
-            char *h = hash(candidate, 42);
+            size_t cand_len = strlen(candidate);
+
+            char *h = hash(candidate, cand_len, SALTING_ROUNDS, H_LEN);
             if (!h) continue;
 
-            if (memcmp(h, targetHash, HASH_LEN) == 0 && strcmp(candidate, targetInput) != 0) {
+            if (memcmp(h, targetHash, H_LEN) == 0 && strcmp(candidate, targetInput) != 0) {
                 printf("[PRE-IMAGE FOUND]\nCandidate: %s\nHash: %s\n", candidate, h);
                 found = 1;
+                free(h);
                 break;
             }
+            free(h);
         }
-
-        print_memory_usage();
-        if (!found)
-            printf("No pre-image found after %d attempts.\n", NUM_TESTS_PI);
-
-        end = clock();
-        cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-        printf("Execution time: %.6f seconds\n", cpu_time_used);
+        free(targetHash);
+        if (!found) printf("No pre-image found after %d attempts.\n", NUM_TESTS_PI);
     }
 
+    // --- Option 3: Single Manual Hash ---
     else if (nc == 3) {
         printf("Write your input: ");
-        if (scanf("%255s", test) != 1) {
-            printf("Not possible to read input.\n");
-            return 1;
-        }
+        if (scanf("%255s", test_input) != 1) return 1;
 
-        size_t size = strlen(test);
-        printf("text: %s, size: %zu\n", test, size);
+        size_t size = strlen(test_input);
+        printf("text: %s, size: %zu\n", test_input, size);
 
         start = clock();
 
-        char *hash_final = hash(test, size, 16, H_LEN);
+        // Updated function call
+        char *hash_final = hash(test_input, size, SALTING_ROUNDS, H_LEN);
         if (!hash_final) {
             printf("Hash failed.\n");
             return 1;
         }
 
-        printf("%s\n", hash_final);
-        print_memory_usage();
-
+        printf("Hash: %s\n", hash_final);
         free(hash_final);
-
-        end = clock();
-        cpu_time_used = (double)(end - start) / CLOCKS_PER_SEC;
-        printf("Execution time: %.6f seconds\n", cpu_time_used);
-        
-
-        else {
-            printf("Invalid option.\n");
-        }
-
     }
+
+    else {
+        printf("Invalid option.\n");
+        return 0;
+    }
+
+    end = clock();
+    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("Execution time: %.6f seconds\n", cpu_time_used);
 
     return 0;
 }
