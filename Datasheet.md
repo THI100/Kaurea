@@ -1,14 +1,14 @@
 | **Field**                       | **Description / Value**                 |
 |---------------------------------|-----------------------------------------|
 | **Hashing Method Name**         | Kaurea                                  |
-| **Version**                     | 0.1.5                                   |
+| **Version**                     | 0.1.6                                   |
 | **Author / Organization**       | THI100                                  |
 | **Date Added**                  | 02/01/26                                |
 | **Category**                    | Cryptographic                           |
 | **Use Case**                    | File Integrity                          |
 | **Hash Size (bits)**            | 1024x                                   |
 | **Output Format**               | Hex                                     |
-| **Collision Resistance**        |                                         |
+| **Collision Resistance**        | Positive                                |
 | **Pre-image Resistance**        |                                         |
 | **Second Pre-image Resistance** |                                         |
 | **Speed (ops/ms)**              | 0.159 ms                                |

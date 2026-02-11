@@ -82,6 +82,13 @@ int main() {
         }
 
         for (size_t i = 0; i < NUM_TESTS_COL; i++) {
+            // --- PROGRESS BAR LOGIC ---
+            if (i % 10000 == 0) {
+                float percent = (float)i / NUM_TESTS_COL * 100;
+                printf("\rProgress: [%.2f%%] (%zu/%d)", percent, i, NUM_TESTS_COL);
+                fflush(stdout); // Force the text to display immediately
+            }
+
             char input[MAX_INPUT_LEN];
             unique_utf8_string(input, MAX_INPUT_LEN, i + 1);
             size_t input_len = strlen(input);
@@ -131,6 +138,13 @@ int main() {
 
         int found = 0;
         for (size_t i = 1; i <= NUM_TESTS_PI; i++) {
+            // --- PROGRESS BAR LOGIC ---
+            if (i % 10000 == 0) {
+                float percent = (float)i / NUM_TESTS_PI * 100;
+                printf("\rProgress: [%.2f%%] (%zu/%d)", percent, i, NUM_TESTS_PI);
+                fflush(stdout); // Force the text to display immediately
+            }
+
             char candidate[MAX_INPUT_LEN];
             unique_utf8_string(candidate, MAX_INPUT_LEN, i);
             size_t cand_len = strlen(candidate);
