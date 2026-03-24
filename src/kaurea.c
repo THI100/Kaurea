@@ -34,9 +34,6 @@ char* hash (const char* input, const size_t input_len, const size_t salting_roun
             return NULL;
         }
 
-        // 3. REMOVE: free(temp); <--- This was your crash. 
-        // 'salted' now owns that memory block.
-
         cof(salted, salted_len, hash_box, LIMIT);
 
         // 4. Final cleanup

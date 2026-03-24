@@ -1,5 +1,5 @@
 # 1: Use 'chmod +x scripts/activate.sh' to enable running the file.
-# 2: Use './scripts/activate.sh' to enable running the file.
+# 2: Use './scripts/activate.sh' to run the file.
 
 echo "Compiling..."
 gcc -O3 -march=native -funroll-loops src/flow.c src/formulas.c src/kaurea.c src/solutions.c -o Kaurea -lm
