@@ -5,5 +5,6 @@ uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds, size_t* o
 void cof (uint8_t* input, const size_t input_len, uint8_t* hash_box, const size_t hash_len);
 void disassemble_blocks (uint8_t* input, const size_t input_len, uint32_t* blocks, size_t blocks_len);
 void assemble_array(uint32_t* blocks, const size_t blocks_len, uint8_t* hash_box, const size_t hash_len);
+uint8_t* pad_input(const uint8_t* input, size_t input_len, size_t block_size, size_t* out_len);
 
 #endif //SALTING_H
