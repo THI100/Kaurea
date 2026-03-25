@@ -1,7 +1,7 @@
 | **Field**                       | **Description / Value**                 |
 |---------------------------------|-----------------------------------------|
 | **Hashing Method Name**         | Kaurea                                  |
-| **Version**                     | 1.1.1                                   |
+| **Version**                     | 1.1.2                                   |
 | **Author / Organization**       | THI100                                  |
 | **Date Added**                  | 02/01/26                                |
 | **Category**                    | Cryptographic                           |
