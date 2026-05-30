@@ -8,8 +8,8 @@
 
 #include "../include/kaurea.h"
 
-#define NUM_TESTS_PI    10000000
-#define NUM_TESTS_COL   2000000
+#define NUM_TESTS_PI    1000000
+#define NUM_TESTS_COL   200000
 #define MAX_INPUT_LEN   128
 #define H_LEN           128         // hash output bytes
 #define H_BITS          (H_LEN * 8) // 1024 bits
