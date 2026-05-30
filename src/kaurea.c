@@ -9,33 +9,13 @@
 
 // ─────────────────────────────────────────────────────────────────────────────
 // hash()
-//
-// Changes vs. original:
-//
-//   FIX 1 — Padding before absorption (solutions.c: pad_input).
-//            The input is padded with a 0x80 sentinel and a big-endian
-//            64-bit bit-length field before being fed to cof().  This
-//            means two messages that are prefixes of each other always
-//            produce distinct padded byte strings, closing the
-//            length-extension attack surface.
-//
-//   FIX 2 — hash_len is a size_t*, not size_t.
-//            The caller can now read back the actual output length
-//            (always LIMIT*2+1 = 257 bytes including the NUL terminator).
-//            Assigning to a local copy of a value parameter was silent UB
-//            that misled callers into thinking the length was communicated.
-//
-//   FIX 3 — NULL-check moved before the cast of input to uint8_t*.
 // ─────────────────────────────────────────────────────────────────────────────
-
-// @param hash_len  Out-parameter; set to the allocated string length on success.
 char* hash(const char* input, const size_t input_len,
            const size_t salting_rounds, size_t* hash_len) {
     #define LIMIT 128
     #define BLEN  32
     #define BLOCK_SIZE 64   /* padding block size in bytes */
 
-    // FIX 3: NULL check before anything else.
     if (!input) return NULL;
 
     uint8_t  hash_box[LIMIT] = {0};
@@ -50,7 +30,6 @@ char* hash(const char* input, const size_t input_len,
         uint8_t* salted = realloc(temp, salted_len * sizeof(uint8_t));
         if (!salted) { free(temp); return NULL; }
 
-        // FIX 1: pad the salted input before compression.
         size_t  padded_len = 0;
         uint8_t* padded = pad_input(salted, salted_len, BLOCK_SIZE, &padded_len);
         free(salted);
@@ -60,7 +39,6 @@ char* hash(const char* input, const size_t input_len,
         free(padded);
     }
     else {
-        // FIX 1: pad even when no salting is requested.
         size_t  padded_len = 0;
         uint8_t* padded = pad_input(input_bytes, input_len, BLOCK_SIZE, &padded_len);
         if (!padded) return NULL;
@@ -94,7 +72,6 @@ char* hash(const char* input, const size_t input_len,
     }
     result[LIMIT * 2] = '\0';
 
-    // FIX 2: write actual length back through the pointer.
     if (hash_len) *hash_len = LIMIT * 2 + 1;
 
     return result;   // caller must free()

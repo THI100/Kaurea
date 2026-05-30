@@ -73,12 +73,8 @@ uint8_t* salt(uint8_t* input, size_t input_len, size_t salting_rounds, size_t* o
 // Appends:  0x80  |  zero bytes  |  8-byte big-endian bit-length
 // The padded length is always a multiple of BLOCK bytes.
 // Caller must free() the returned buffer.
-//
-// Without this, two messages that are prefixes of each other can produce
-// related internal states (length-extension attack).
 // ─────────────────────────────────────────────────────────────────────────────
 uint8_t* pad_input(const uint8_t* input, size_t input_len, size_t block_size, size_t* out_len) {
-    // We need at least 1 byte for 0x80 and 8 bytes for the length.
     size_t min_padded = input_len + 1 + 8;
     size_t padded_len = ((min_padded + block_size - 1) / block_size) * block_size;
 

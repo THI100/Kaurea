@@ -202,19 +202,12 @@ static void test_single(void) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Option 4 — Avalanche / Strict Avalanche Criterion (SAC)
 //
-// For each of N random inputs, flip every single input bit one at a time
-// and measure how many output bits change.
-//
-// Target: each flipped input bit should change ~50 % of output bits
-// (512 out of 1024).  We report:
-//   - mean bit-flip rate across all (input_bit, test) pairs
-//   - worst-case single-bit bias  (how far any bit strays from 50 %)
-//   - SAC matrix: for each input bit position, average output bits flipped
+// Target: each flipped input bit should change ~50 % of output bits (512 out of 1024).
 //
 // A well-designed hash should have mean ≈ 50 % and worst-case < 5 % deviation.
 // ─────────────────────────────────────────────────────────────────────────────
 
-#define SAC_SAMPLES     200     // inputs to test  (keep reasonable — O(N*inputbits))
+#define SAC_SAMPLES     200     // inputs to test  (keep reasonable - O(N*inputbits))
 #define SAC_INPUT_BYTES 16      // fixed input size for SAC (128 bits)
 #define SAC_INPUT_BITS  (SAC_INPUT_BYTES * 8)
 
@@ -234,7 +227,6 @@ static void test_avalanche(void) {
         // Generate a random fixed-length input
         char base_input[SAC_INPUT_BYTES + 1];
         unique_utf8_string(base_input, SAC_INPUT_BYTES + 1, (unsigned long long)s + 1);
-        // Pad / trim to exactly SAC_INPUT_BYTES
         size_t blen = strlen(base_input);
         while (blen < SAC_INPUT_BYTES) base_input[blen++] = 'A';
         base_input[SAC_INPUT_BYTES] = '\0';
@@ -297,15 +289,6 @@ static void test_avalanche(void) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Option 5 — Bit Distribution / Frequency Test
-//
-// Hashes N random inputs and counts how often each of the 1024 output bit
-// positions is set to 1.  In a uniform hash, every bit should be 1 roughly
-// 50 % of the time.
-//
-// We report:
-//   - mean frequency across all bit positions
-//   - standard deviation
-//   - the most and least biased individual bit positions
 //
 // A strong hash should have std-dev < 1 % and no bit position outside
 // the range [45 %, 55 %].
@@ -381,10 +364,6 @@ static void test_bit_distribution(void) {
 // Verifies that hash("abc") and hash("abc" + any_suffix) are unrelated —
 // i.e., that the padding fix is working.
 //
-// A vulnerable hash would produce hash("abc||pad||suffix") ==
-// permute(hash("abc"), suffix), so the outputs would be related.
-// We can't prove absence of this algebraically here, but we can verify that
-// appending bytes consistently produces completely different outputs with
 // good avalanche (≥ 40 % bit difference from the base hash).
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -441,12 +420,9 @@ static void test_length_extension(void) {
 // Option 7 — Timing Consistency Test
 //
 // Measures whether hashing short vs. long inputs takes suspiciously different
-// amounts of time.  A large variance could indicate:
-//   - early-exit paths that leak input length
-//   - cache timing from input-dependent branches
+// amounts of time.
 //
-// We report mean and coefficient of variation (CV = stddev/mean).
-// A good hash should have CV < 10 % across very different input sizes.
+// Should have CV < 10 % across different input sizes.
 // ─────────────────────────────────────────────────────────────────────────────
 
 #define TIMING_REPS 500

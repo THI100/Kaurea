@@ -27,14 +27,9 @@ uint32_t golden_mix(uint32_t x, uint32_t y, uint32_t z) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared 8-bit S-box (AES SubBytes table).
 //
-// This is the standard AES S-box, which has been exhaustively analysed:
+// This is the standard AES S-box:
 //   - Non-linearity: 112 (maximum achievable for an 8-bit bijection)
-//   - Differential uniformity: 4 (optimal for 8-bit)
-//   - No fixed points (S[x] != x for all x)
-//   - No opposite fixed points (S[x] != ~x for all x)
-//
-// Both F3 and F5 apply it byte-by-byte to inject provable non-linearity
-// into what were previously purely linear operations.
+//   - Differential uniformity: 4 (optimal for 8-bit
 // ─────────────────────────────────────────────────────────────────────────────
 static const uint8_t SBOX[256] = {
     0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76,
@@ -55,7 +50,7 @@ static const uint8_t SBOX[256] = {
     0x8c,0xa1,0x89,0x0d,0xbf,0xe6,0x42,0x68,0x41,0x99,0x2d,0x0f,0xb0,0x54,0xbb,0x16,
 };
 
-// Helper: apply SBOX to all 4 bytes of a uint32, reassemble in the same byte order.
+// Helper:
 static inline uint32_t sbox_word(uint32_t x) {
     return ((uint32_t)SBOX[(x >> 24) & 0xFF] << 24)
          | ((uint32_t)SBOX[(x >> 16) & 0xFF] << 16)
@@ -64,25 +59,15 @@ static inline uint32_t sbox_word(uint32_t x) {
 }
 
 // F3: πPERM — non-linear permutation.
-//
-// Original was: ROTL(x, k) ^ ROTR(x, 32-k)  — purely linear for any fixed k.
-//
-// New design:
-//   1. sbox_word(x)   — break linearity completely (NL=112 per byte)
-//   2. ROTL(t, k)     — data-dependent rotation for diffusion
-//   3. XOR with the rotation-mixed original — cross-layer avalanche
-//
-// The result is non-invertible without knowing both x and r, and every
-// output bit depends non-linearly on every input bit.
 uint32_t pi_permutation(uint32_t x, uint32_t r) {
     uint32_t k = (r * 0x243F6A88u) & 31;
     uint32_t t = sbox_word(x);
     t = ROTL(t, k);
-    t ^= ROTL(x, (k + 13) & 31);   // mix in rotated original to widen avalanche
+    t ^= ROTL(x, (k + 13) & 31);
     return t;
 }
 
-// F4: Basic ARX transformation (unchanged)
+// F4: Basic ARX transformation
 uint32_t arxl(uint32_t x, uint32_t c) {
     x += c;
     x ^= ROTR(x, 11);
@@ -90,18 +75,6 @@ uint32_t arxl(uint32_t x, uint32_t c) {
 }
 
 // F5: SRPERM — non-linear byte substitution + diffusion.
-//
-// Original was: swap_halves then ROTL(9) = effectively just ROTL(25) — one rotation.
-//
-// New design:
-//   1. sbox_word(x)          — inject non-linearity before any diffusion
-//   2. swap 16-bit halves    — cross-half mixing
-//   3. ROTL(9)               — final rotation for bit spread
-//   4. XOR sbox_word(~x)     — second NL layer using the bitwise complement,
-//                              ensuring output bits depend on ALL input bits
-//
-// Step 4 uses ~x specifically so the two S-box lookups are from different
-// input points, preventing a cancellation where S[x] ^ S[x] = 0.
 uint32_t srperm(uint32_t x) {
     uint32_t t = sbox_word(x);
     t = (t << 16) | (t >> 16);
